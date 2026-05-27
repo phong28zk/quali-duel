@@ -24,7 +24,7 @@ Build a beautiful F1 qualifying comparison app that lets a user pick a session, 
 |-------|------|--------|
 | 1 | [Research and scope](./phase-01-research-and-scope.md) | Complete |
 | 2 | [Build data access layer](./phase-02-build-data-access-layer.md) | Complete |
-| 3 | [Build lap comparison experience](./phase-03-build-lap-comparison-experience.md) | Pending |
+| 3 | [Build lap comparison experience](./phase-03-build-lap-comparison-experience.md) | Complete |
 | 4 | [Test polish and docs](./phase-04-test-polish-and-docs.md) | Pending |
 
 ## Dependencies

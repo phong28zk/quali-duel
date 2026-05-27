@@ -21,6 +21,8 @@ export function normalizeLapProgress(
     gear: clampInt(s.gear, 0, 8),
     rpm: Math.max(0, s.rpm),
     drs: Math.max(0, Math.trunc(s.drs)),
+    x: s.x,
+    y: s.y,
   }));
 }
 

@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "Build lap comparison experience"
-status: pending
+status: complete
 priority: P1
 effort: "3d"
 dependencies: [2]
