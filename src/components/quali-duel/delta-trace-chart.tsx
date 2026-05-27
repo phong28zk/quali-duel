@@ -68,8 +68,18 @@ export function DeltaTraceChart({
         fill={qualiDuelPalette.panelCharcoal}
         rx={12}
       />
-      <polygon points={gainFill} fill={qualiDuelPalette.gainLime} opacity={0.18} />
-      <polygon points={lossFill} fill={qualiDuelPalette.alertRed} opacity={0.18} />
+      <polygon
+        className="qd-fill-fade"
+        points={gainFill}
+        fill={qualiDuelPalette.gainLime}
+        opacity={0.2}
+      />
+      <polygon
+        className="qd-fill-fade"
+        points={lossFill}
+        fill={qualiDuelPalette.alertRed}
+        opacity={0.2}
+      />
       <line
         x1={PADDING.left}
         x2={PADDING.left + innerW}
@@ -79,6 +89,7 @@ export function DeltaTraceChart({
         strokeDasharray="4 6"
       />
       <polyline
+        className="qd-stroke-reveal"
         points={traceAttr}
         fill="none"
         stroke={qualiDuelPalette.telemetryBlue}

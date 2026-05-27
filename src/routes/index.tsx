@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { fetchSessions } from '~/server/fetch-sessions';
 import { qualiDuelPalette } from '~/theme/quali-duel-theme';
+import type { SessionOption } from '~/lib/contracts';
 
 export const Route = createFileRoute('/')({
   loader: () =>
@@ -27,81 +27,154 @@ function HomeRoute() {
   const sessions = Route.useLoaderData();
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
-      <Stack spacing={6}>
-        <Box>
+    <Container maxWidth="lg" sx={{ py: { xs: 5, md: 9 } }}>
+      <Stack spacing={{ xs: 5, md: 7 }}>
+        <Box className="qd-rise">
           <Typography
             variant="overline"
             sx={{ color: qualiDuelPalette.telemetryBlue }}
           >
-            Quali Duel
+            Telemetry · Lab
           </Typography>
           <Typography
             variant="h1"
-            sx={{ mt: 1.5, fontSize: { xs: 32, sm: 40, md: 56 } }}
+            sx={{
+              mt: 1.5,
+              fontSize: { xs: 36, sm: 52, md: 76 },
+              lineHeight: 1.02,
+              maxWidth: 16,
+            }}
           >
-            Compare two qualifying laps. See where the time goes.
+            Where{' '}
+            <Box
+              component="span"
+              sx={{
+                color: qualiDuelPalette.telemetryBlue,
+                fontStyle: 'italic',
+              }}
+            >
+              did
+            </Box>{' '}
+            the time go?
           </Typography>
           <Typography
             variant="body1"
-            sx={{ mt: 2, maxWidth: 60, color: 'text.secondary' }}
+            sx={{
+              mt: 3,
+              maxWidth: 56,
+              color: 'text.secondary',
+              fontSize: { xs: 16, md: 18 },
+            }}
           >
-            Historical OpenF1 telemetry. No live timing. No clutter.
+            Compare two qualifying laps side by side. Telemetry overlays,
+            sector splits, a delta curve that tells you exactly where each
+            driver gained or lost.
           </Typography>
         </Box>
 
-        <Paper
-          elevation={0}
-          sx={{
-            p: { xs: 3, md: 4 },
-            background: qualiDuelPalette.panelCharcoal,
-          }}
-        >
-          <Stack spacing={3}>
-            <Typography variant="h2" sx={{ fontSize: 22 }}>
-              Pick a qualifying weekend
+        <Box className="qd-rise qd-rise-delay-1">
+          <Stack
+            direction="row"
+            spacing={1.5}
+            sx={{ alignItems: 'baseline', mb: 2 }}
+          >
+            <Typography variant="h2" sx={{ fontSize: 24 }}>
+              Pick a weekend
             </Typography>
-            <Stack spacing={1.5}>
-              {sessions.slice(0, 10).map((session) => (
-                <Link
-                  key={session.sessionKey}
-                  to="/compare"
-                  search={{ sessionKey: session.sessionKey }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '12px 16px',
-                    borderRadius: 12,
-                    border: `1px solid ${qualiDuelPalette.quietLine}`,
-                    color: qualiDuelPalette.textSmoke,
-                    textDecoration: 'none',
-                    transition: 'border-color 160ms, background 160ms',
-                  }}
-                >
-                  <span>
-                    {session.circuitShortName} · {session.countryName}
-                  </span>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: 'text.secondary',
-                      fontFamily: 'JetBrains Mono, monospace',
-                    }}
-                  >
-                    {session.dateStart.slice(0, 10)}
-                  </Typography>
-                </Link>
-              ))}
-              {sessions.length === 0 ? (
-                <Typography sx={{ color: 'text.secondary' }}>
-                  No qualifying sessions found for the selected year.
-                </Typography>
-              ) : null}
-            </Stack>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              {sessions.length} qualifying sessions · {sessions[0]?.year}
+            </Typography>
           </Stack>
-        </Paper>
+          <Box
+            sx={{
+              display: 'grid',
+              gap: 1.5,
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                lg: 'repeat(3, 1fr)',
+              },
+            }}
+          >
+            {sessions.slice(0, 12).map((session, i) => (
+              <SessionCard
+                key={session.sessionKey}
+                session={session}
+                delayMs={i * 30}
+              />
+            ))}
+            {sessions.length === 0 ? (
+              <Typography sx={{ color: 'text.secondary' }}>
+                No qualifying sessions found.
+              </Typography>
+            ) : null}
+          </Box>
+        </Box>
       </Stack>
     </Container>
+  );
+}
+
+function SessionCard({
+  session,
+  delayMs,
+}: {
+  session: SessionOption;
+  delayMs: number;
+}) {
+  return (
+    <Link
+      to="/compare"
+      search={{ sessionKey: session.sessionKey }}
+      style={{
+        textDecoration: 'none',
+        animation: `qd-rise 320ms cubic-bezier(0.2, 0.7, 0.2, 1) ${delayMs}ms both`,
+      }}
+    >
+      <Box
+        sx={{
+          position: 'relative',
+          p: 2.5,
+          borderRadius: 3,
+          border: `1px solid ${qualiDuelPalette.quietLine}`,
+          background: qualiDuelPalette.panelCharcoal,
+          color: 'text.primary',
+          transition: 'border-color 180ms, transform 180ms, background 180ms',
+          overflow: 'hidden',
+          '&:hover': {
+            borderColor: qualiDuelPalette.telemetryBlue,
+            transform: 'translateY(-2px)',
+            background: 'rgba(110, 200, 255, 0.04)',
+          },
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            inset: '0 auto 0 0',
+            width: 3,
+            background: qualiDuelPalette.telemetryBlue,
+            opacity: 0.5,
+          },
+        }}
+      >
+        <Stack spacing={0.5} sx={{ pl: 1 }}>
+          <Typography
+            variant="caption"
+            sx={{
+              color: 'text.secondary',
+              fontFamily: 'JetBrains Mono, monospace',
+              letterSpacing: '0.08em',
+            }}
+          >
+            {session.dateStart.slice(0, 10)}
+          </Typography>
+          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+            {session.circuitShortName}
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            {session.countryName}
+          </Typography>
+        </Stack>
+      </Box>
+    </Link>
   );
 }

@@ -11,6 +11,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { qualiDuelTheme } from '~/theme/quali-duel-theme';
 import { createEmotionCache } from '~/theme/emotion-cache';
+import { SiteFrame } from '~/components/quali-duel/site-frame';
 import tokensStylesheet from '~/styles/tokens.css?url';
 import globalsStylesheet from '~/styles/globals.css?url';
 
@@ -63,7 +64,7 @@ function RootDocument({ children }: { children: ReactNode }) {
         <CacheProvider value={emotionCache}>
           <ThemeProvider theme={qualiDuelTheme}>
             <CssBaseline />
-            {children ?? <Outlet />}
+            <SiteFrame>{children ?? <Outlet />}</SiteFrame>
           </ThemeProvider>
         </CacheProvider>
         <Scripts />

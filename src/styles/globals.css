@@ -28,6 +28,70 @@ a {
   min-height: 100vh;
 }
 
+@keyframes qd-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes qd-stroke {
+  from {
+    stroke-dashoffset: 1800;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes qd-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.qd-rise {
+  animation: qd-rise var(--motion-panel) var(--motion-ease) both;
+}
+
+.qd-rise-delay-1 {
+  animation-delay: 80ms;
+}
+.qd-rise-delay-2 {
+  animation-delay: 160ms;
+}
+.qd-rise-delay-3 {
+  animation-delay: 240ms;
+}
+
+.qd-stroke-reveal {
+  stroke-dasharray: 1800;
+  stroke-dashoffset: 1800;
+  animation: qd-stroke var(--motion-hero) var(--motion-ease) forwards;
+}
+
+.qd-fill-fade {
+  animation: qd-fade calc(var(--motion-hero) * 0.7) var(--motion-ease) 200ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qd-rise,
+  .qd-stroke-reveal,
+  .qd-fill-fade {
+    animation: none !important;
+  }
+  .qd-stroke-reveal {
+    stroke-dashoffset: 0;
+  }
+}
+
 .qd-hero {
   margin-bottom: var(--space-8);
 }

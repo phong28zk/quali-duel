@@ -167,39 +167,88 @@ function CompareRoute() {
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
       <Stack spacing={4}>
-        <Box>
+        <Box className="qd-rise">
           <Typography variant="overline" sx={{ color: qualiDuelPalette.telemetryBlue }}>
             {details.session.year} · {details.session.circuitShortName} ·{' '}
             {details.session.countryName}
           </Typography>
           {comparison ? (
-            <>
-              <Typography variant="h1" sx={{ mt: 1, fontSize: { xs: 28, md: 40 } }}>
-                {comparison.lapA.driver.nameAcronym} vs{' '}
-                {comparison.lapB.driver.nameAcronym}
-              </Typography>
+            <Box sx={{ mt: 1 }}>
               <Typography
-                variant="h2"
+                variant="h1"
                 sx={{
-                  mt: 1,
-                  fontFamily: 'JetBrains Mono, monospace',
-                  color:
-                    comparison.summary.totalDeltaSeconds < 0
-                      ? qualiDuelPalette.gainLime
-                      : qualiDuelPalette.alertRed,
+                  fontSize: { xs: 36, md: 56 },
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1.05,
                 }}
               >
-                {formatDeltaSeconds(comparison.summary.totalDeltaSeconds)} s
+                <Box component="span" sx={{ color: 'text.primary' }}>
+                  {comparison.lapA.driver.nameAcronym}
+                </Box>
+                <Box
+                  component="span"
+                  sx={{
+                    mx: 1.5,
+                    color: 'text.secondary',
+                    fontStyle: 'italic',
+                    fontWeight: 400,
+                  }}
+                >
+                  vs
+                </Box>
+                <Box component="span" sx={{ color: qualiDuelPalette.brakingAmber }}>
+                  {comparison.lapB.driver.nameAcronym}
+                </Box>
               </Typography>
-            </>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{ mt: 2, alignItems: 'baseline' }}
+              >
+                <Typography
+                  sx={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: { xs: 40, md: 64 },
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    color:
+                      comparison.summary.totalDeltaSeconds < 0
+                        ? qualiDuelPalette.gainLime
+                        : qualiDuelPalette.alertRed,
+                  }}
+                >
+                  {formatDeltaSeconds(comparison.summary.totalDeltaSeconds)}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    letterSpacing: '0.2em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  seconds · lapA vs lapB
+                </Typography>
+              </Stack>
+            </Box>
           ) : (
-            <Typography variant="h1" sx={{ mt: 1, fontSize: { xs: 28, md: 40 } }}>
+            <Typography variant="h1" sx={{ mt: 1, fontSize: { xs: 32, md: 48 } }}>
               Pick two laps to compare
             </Typography>
           )}
         </Box>
 
-        <Paper elevation={0} sx={{ p: 3, background: qualiDuelPalette.panelCharcoal }}>
+        <Paper
+          elevation={0}
+          className="qd-rise qd-rise-delay-1"
+          sx={{
+            p: 3,
+            background: qualiDuelPalette.panelCharcoal,
+            position: 'sticky',
+            top: 68,
+            zIndex: 5,
+          }}
+        >
           <Stack spacing={2}>
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               {details.laps.length} valid laps · {details.drivers.length} drivers
