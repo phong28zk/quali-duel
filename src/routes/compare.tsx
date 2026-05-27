@@ -13,6 +13,7 @@ import { LapSummaryCard } from '~/components/quali-duel/lap-summary-card';
 import { DeltaTraceChart } from '~/components/quali-duel/delta-trace-chart';
 import { TelemetryTraceChart } from '~/components/quali-duel/telemetry-trace-chart';
 import { TrackProgressMap } from '~/components/quali-duel/track-progress-map';
+import { AnimatedDeltaNumber } from '~/components/quali-duel/animated-delta-number';
 import {
   LapSelector,
   type LapPickOption,
@@ -206,18 +207,22 @@ function CompareRoute() {
                 sx={{ mt: 2, alignItems: 'baseline' }}
               >
                 <Typography
+                  component="span"
                   sx={{
                     fontFamily: 'JetBrains Mono, monospace',
                     fontSize: { xs: 40, md: 64 },
                     fontWeight: 700,
                     lineHeight: 1,
+                    fontVariantNumeric: 'tabular-nums',
                     color:
                       comparison.summary.totalDeltaSeconds < 0
                         ? qualiDuelPalette.gainLime
                         : qualiDuelPalette.alertRed,
                   }}
                 >
-                  {formatDeltaSeconds(comparison.summary.totalDeltaSeconds)}
+                  <AnimatedDeltaNumber
+                    target={comparison.summary.totalDeltaSeconds}
+                  />
                 </Typography>
                 <Typography
                   variant="caption"
@@ -303,12 +308,14 @@ function ComparisonBody({ payload }: { payload: LapComparisonPayload }) {
           driver={payload.lapA.driver}
           lap={payload.lapA.lap}
           samples={payload.lapA.samples}
+          rivalLap={payload.lapB.lap}
           accent={qualiDuelPalette.telemetryBlue}
         />
         <LapSummaryCard
           driver={payload.lapB.driver}
           lap={payload.lapB.lap}
           samples={payload.lapB.samples}
+          rivalLap={payload.lapA.lap}
           accent={qualiDuelPalette.brakingAmber}
         />
       </Box>

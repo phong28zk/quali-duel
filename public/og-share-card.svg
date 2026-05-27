@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0f14"/>
+      <stop offset="1" stop-color="#121821"/>
+    </linearGradient>
+    <linearGradient id="trace" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6ec8ff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#6ec8ff" stop-opacity="1"/>
+      <stop offset="1" stop-color="#6ec8ff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle grid -->
+  <g stroke="#2a3442" stroke-width="1" opacity="0.4">
+    <line x1="0" y1="160" x2="1200" y2="160"/>
+    <line x1="0" y1="320" x2="1200" y2="320"/>
+    <line x1="0" y1="480" x2="1200" y2="480"/>
+    <line x1="240" y1="0" x2="240" y2="630"/>
+    <line x1="480" y1="0" x2="480" y2="630"/>
+    <line x1="720" y1="0" x2="720" y2="630"/>
+    <line x1="960" y1="0" x2="960" y2="630"/>
+  </g>
+
+  <!-- Wordmark chevron mark -->
+  <g transform="translate(72, 64)" fill="none" stroke="#6ec8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 36 L18 6 L36 36"/>
+    <path d="M8 36 L28 36"/>
+  </g>
+  <circle cx="108" cy="72" r="4" fill="#b7ff2a"/>
+  <text x="124" y="92" fill="#d7dee7" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="700" letter-spacing="-0.5">
+    Quali <tspan fill="#6ec8ff">Duel</tspan>
+  </text>
+
+  <!-- Hero copy -->
+  <text x="72" y="280" fill="#d7dee7" font-family="Inter, system-ui, sans-serif" font-size="96" font-weight="700" letter-spacing="-3">
+    Where <tspan fill="#6ec8ff" font-style="italic">did</tspan> the
+  </text>
+  <text x="72" y="380" fill="#d7dee7" font-family="Inter, system-ui, sans-serif" font-size="96" font-weight="700" letter-spacing="-3">
+    time go?
+  </text>
+  <text x="72" y="448" fill="#d7dee7" opacity="0.65" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="400">
+    Compare two F1 qualifying laps. Sector by sector.
+  </text>
+
+  <!-- Delta-trace mini chart -->
+  <g transform="translate(0, 510)">
+    <line x1="72" y1="40" x2="1128" y2="40" stroke="#2a3442" stroke-dasharray="4 8"/>
+    <path d="M72 40 C 200 38, 320 -10, 460 -30 S 720 60, 880 50 S 1080 -20, 1128 -10"
+      fill="none" stroke="url(#trace)" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Driver tags + delta -->
+  <g transform="translate(680, 200)">
+    <text fill="#6ec8ff" font-family="JetBrains Mono, monospace" font-size="20" letter-spacing="3">
+      LAP A · LEC
+    </text>
+    <text y="40" fill="#ffb02e" font-family="JetBrains Mono, monospace" font-size="20" letter-spacing="3">
+      LAP B · SAI
+    </text>
+    <text y="160" fill="#b7ff2a" font-family="JetBrains Mono, monospace" font-size="120" font-weight="700" letter-spacing="-4">
+      -0.369
+    </text>
+    <text y="200" fill="#d7dee7" opacity="0.55" font-family="Inter, system-ui, sans-serif" font-size="18" letter-spacing="3">
+      SECONDS
+    </text>
+  </g>
+
+  <!-- Footer credit -->
+  <text x="72" y="600" fill="#d7dee7" opacity="0.4" font-family="JetBrains Mono, monospace" font-size="14" letter-spacing="2">
+    telemetry · lab · openf1
+  </text>
+  <text x="1128" y="600" text-anchor="end" fill="#d7dee7" opacity="0.4" font-family="JetBrains Mono, monospace" font-size="14" letter-spacing="2">
+    quali-duel.fcmunchen1901.workers.dev
+  </text>
+</svg>

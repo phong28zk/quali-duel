@@ -6,12 +6,16 @@ import {
   formatSector,
 } from '~/lib/ui/format';
 import { qualiDuelPalette } from '~/theme/quali-duel-theme';
+import { SectorMiniBars } from './sector-mini-bars';
 import type { DriverOption, LapOption, NormalizedTelemetrySample } from '~/lib/contracts';
 
 interface LapSummaryCardProps {
   driver: DriverOption;
   lap: LapOption;
   samples: ReadonlyArray<NormalizedTelemetrySample>;
+  // The other lap in the comparison — used to render sector mini-bars showing
+  // gain/loss per sector. Optional so the card still renders solo.
+  rivalLap?: LapOption;
   accent?: string;
 }
 
@@ -25,6 +29,7 @@ export function LapSummaryCard({
   driver,
   lap,
   samples,
+  rivalLap,
   accent = qualiDuelPalette.telemetryBlue,
 }: LapSummaryCardProps) {
   const teamColour = driver.teamColour ? `#${driver.teamColour}` : accent;
@@ -66,11 +71,15 @@ export function LapSummaryCard({
         <Typography variant="h2" sx={{ fontFamily: 'JetBrains Mono, monospace' }}>
           {formatLapTime(lap.lapDurationSeconds)}
         </Typography>
-        <Stack direction="row" spacing={3}>
-          <Sector label="S1" value={formatSector(lap.sector1Seconds)} />
-          <Sector label="S2" value={formatSector(lap.sector2Seconds)} />
-          <Sector label="S3" value={formatSector(lap.sector3Seconds)} />
-        </Stack>
+        {rivalLap ? (
+          <SectorMiniBars lap={lap} rival={rivalLap} />
+        ) : (
+          <Stack direction="row" spacing={3}>
+            <Sector label="S1" value={formatSector(lap.sector1Seconds)} />
+            <Sector label="S2" value={formatSector(lap.sector2Seconds)} />
+            <Sector label="S3" value={formatSector(lap.sector3Seconds)} />
+          </Stack>
+        )}
         <Stack direction="row" spacing={3}>
           <Stat label="Top speed" value={`${Math.round(topSpeed(samples))} km/h`} />
           <Stat

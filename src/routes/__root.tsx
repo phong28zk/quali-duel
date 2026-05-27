@@ -32,8 +32,19 @@ export const Route = createRootRoute({
         name: 'theme-color',
         content: '#0b0f14',
       },
+      { property: 'og:title', content: 'Quali Duel — F1 qualifying lap comparison' },
+      {
+        property: 'og:description',
+        content:
+          'Compare two qualifying laps side by side. Delta trace, telemetry overlays, sector splits.',
+      },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:image', content: '/og-share-card.svg' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:image', content: '/og-share-card.svg' },
     ],
     links: [
+      { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
       {
         rel: 'preconnect',
         href: 'https://fonts.googleapis.com',
