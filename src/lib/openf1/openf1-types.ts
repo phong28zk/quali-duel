@@ -36,7 +36,9 @@ export const RawOpenF1LapSchema = z.object({
   duration_sector_1: z.number().nullable().optional(),
   duration_sector_2: z.number().nullable().optional(),
   duration_sector_3: z.number().nullable().optional(),
-  date_start: z.string().datetime({ offset: true }),
+  // OpenF1 occasionally returns null for invalidated or in-pit laps; we keep
+  // the field nullable and let the mapper filter laps that lack a timestamp.
+  date_start: z.string().datetime({ offset: true }).nullable(),
   is_pit_out_lap: z.boolean().optional(),
 });
 

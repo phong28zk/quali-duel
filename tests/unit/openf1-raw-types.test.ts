@@ -100,6 +100,19 @@ describe('RawOpenF1LapSchema', () => {
     expect(parsed.lap_duration).toBeNull();
     expect(parsed.is_pit_out_lap).toBe(true);
   });
+
+  it('tolerates null date_start (observed on real OpenF1 invalidated laps)', () => {
+    const sample = {
+      session_key: 9472,
+      meeting_key: 1217,
+      driver_number: 16,
+      lap_number: 1,
+      lap_duration: null,
+      date_start: null,
+      is_pit_out_lap: false,
+    };
+    expect(() => RawOpenF1LapSchema.parse(sample)).not.toThrow();
+  });
 });
 
 describe('RawOpenF1CarDataSchema', () => {

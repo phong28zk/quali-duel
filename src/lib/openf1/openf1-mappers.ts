@@ -54,6 +54,8 @@ export function mapRawLapToLapOption(
   ctx: LapMapContext,
 ): LapOption | null {
   if (raw.lap_duration === null || raw.lap_duration <= 0) return null;
+  // Without a start timestamp we cannot fetch the telemetry window.
+  if (raw.date_start === null) return null;
   const isOutlap = raw.is_pit_out_lap === true;
   return {
     sessionKey: raw.session_key,

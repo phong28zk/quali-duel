@@ -109,7 +109,7 @@ function pickLap(
     );
   }
   const mapped = mapRawLapToLapOption(raw, { fastestForDriver: fastest });
-  if (!mapped) {
+  if (!mapped || raw.date_start === null) {
     throw new Error(
       `Lap ${pick.lapNumber} for driver ${pick.driverNumber} has no recorded time`,
     );
