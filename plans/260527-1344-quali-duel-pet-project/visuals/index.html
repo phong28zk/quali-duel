@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quali Duel · Plan Visualization</title>
+<style>
+  :root {
+    --graphite:#0b0f14;
+    --panel:#121821;
+    --tele-blue:#6ec8ff;
+    --gain-lime:#b7ff2a;
+    --brake-amber:#ffb02e;
+    --alert-red:#ff5a5f;
+    --smoke:#d7dee7;
+    --quiet:#2a3442;
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; background:var(--graphite); color:var(--smoke); font-family:Inter,ui-sans-serif,system-ui,sans-serif; }
+  .wrap { max-width:1180px; margin:0 auto; padding:48px 24px 96px; }
+  header { border-bottom:1px solid var(--quiet); padding-bottom:24px; margin-bottom:32px; }
+  .kicker { color:var(--tele-blue); font-size:12px; letter-spacing:.18em; text-transform:uppercase; }
+  h1 { font-size:42px; line-height:1.05; margin:8px 0 12px; font-weight:700; letter-spacing:-.01em; }
+  h1 .accent { color:var(--gain-lime); }
+  p.lead { color:#a7b1bf; max-width:720px; margin:0; }
+  .meta { display:flex; gap:24px; margin-top:18px; font-size:13px; color:#8993a3; flex-wrap:wrap; }
+  .meta span b { color:var(--smoke); font-weight:600; }
+  section { background:var(--panel); border:1px solid var(--quiet); border-radius:16px; padding:28px 28px 20px; margin-bottom:24px; }
+  section h2 { margin:0 0 6px; font-size:22px; }
+  section p.sub { color:#8993a3; margin:0 0 22px; font-size:14px; }
+  .mermaid { background:transparent; min-height:120px; }
+  .legend { display:flex; gap:20px; flex-wrap:wrap; padding-top:18px; border-top:1px dashed var(--quiet); margin-top:18px; font-size:12px; color:#8993a3; }
+  .swatch { display:inline-block; width:12px; height:12px; border-radius:3px; vertical-align:middle; margin-right:6px; }
+  footer { color:#5a6573; font-size:12px; text-align:center; margin-top:48px; }
+  a { color:var(--tele-blue); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  .pill-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+  .pill { font-size:11px; padding:4px 10px; border-radius:99px; background:#1a2331; border:1px solid var(--quiet); color:#a7b1bf; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Pet Project · Visualization</div>
+  <h1>Quali Duel <span class="accent">MVP</span> — how the app will be built</h1>
+  <p class="lead">Historical F1 qualifying lap comparison. OpenF1-first data, Next.js + TypeScript UI, comparison-first one-page experience. Four phases, ~8 days of solo work.</p>
+  <div class="meta">
+    <span><b>Stack:</b> Next.js + TypeScript</span>
+    <span><b>Data:</b> OpenF1 (historical only)</span>
+    <span><b>Charts:</b> visx / D3</span>
+    <span><b>Scope:</b> qualifying · two-lap compare · share via URL</span>
+  </div>
+  <div class="pill-row">
+    <span class="pill">P1 priority</span>
+    <span class="pill">No live timing</span>
+    <span class="pill">No auth</span>
+    <span class="pill">No paid infra</span>
+    <span class="pill">FastF1 = optional fallback</span>
+  </div>
+</header>
+
+<section>
+  <h2>Phase flow &amp; dependencies</h2>
+  <p class="sub">Each phase blocks the next. Phase 1 locks scope &amp; contracts → Phase 2 builds the data spine → Phase 3 turns payload into product → Phase 4 hardens it.</p>
+  <pre class="mermaid">
+flowchart LR
+  classDef phase fill:#1a2331,stroke:#2a3442,color:#d7dee7,rx:10,ry:10
+  classDef p1 fill:#142031,stroke:#6ec8ff,color:#d7dee7
+  classDef p2 fill:#142031,stroke:#6ec8ff,color:#d7dee7
+  classDef p3 fill:#1f2a18,stroke:#b7ff2a,color:#d7dee7
+  classDef p4 fill:#2a1f10,stroke:#ffb02e,color:#d7dee7
+
+  subgraph P1["Phase 1 · Research &amp; scope · 1d"]
+    direction TB
+    P1A["Pick stack: Next.js + TS"]
+    P1B["Define data contract<br/>SessionOption · DriverOption · LapOption<br/>NormalizedTelemetrySample · LapComparisonPayload"]
+    P1C["Lock v1 scope:<br/>qualifying · 2-lap compare · historical"]
+    P1D["Design tokens &amp; visual direction"]
+  end
+
+  subgraph P2["Phase 2 · Data access layer · 2d"]
+    direction TB
+    P2A["OpenF1 client (typed)"]
+    P2B["Route handlers<br/>/api/sessions · /api/lap-comparison"]
+    P2C["Telemetry merge<br/>nearest-sample by timestamp"]
+    P2D["Lap-progress normalize"]
+    P2E["Comparison payload mapper"]
+    P2F["Recorded fixtures"]
+  end
+
+  subgraph P3["Phase 3 · Comparison UI · 3d"]
+    direction TB
+    P3A["Page shell + selectors"]
+    P3B["Summary cards<br/>lap time · sector · top speed"]
+    P3C["Delta chart (hero)"]
+    P3D["Telemetry traces<br/>speed · throttle · brake · gear · RPM"]
+    P3E["Track-progress map<br/>gain/loss segments"]
+    P3F["Shareable URL state"]
+  end
+
+  subgraph P4["Phase 4 · Test polish &amp; docs · 2d"]
+    direction TB
+    P4A["Unit tests · merge math"]
+    P4B["Integration tests · routes"]
+    P4C["E2E · one full compare"]
+    P4D["A11y + perf audit"]
+    P4E["README · architecture · backlog"]
+  end
+
+  P1 ==> P2 ==> P3 ==> P4
+
+  class P1 p1
+  class P2 p2
+  class P3 p3
+  class P4 p4
+  </pre>
+  <div class="legend">
+    <span><span class="swatch" style="background:#6ec8ff"></span>P1/P2 — foundations (scope, data)</span>
+    <span><span class="swatch" style="background:#b7ff2a"></span>P3 — product surface (UI &amp; charts)</span>
+    <span><span class="swatch" style="background:#ffb02e"></span>P4 — polish &amp; reliability</span>
+  </div>
+</section>
+
+<section>
+  <h2>Runtime data flow — how a comparison loads</h2>
+  <p class="sub">Browser drives selectors → BFF route handlers fetch &amp; normalize → UI renders charts. URL is the shareable state.</p>
+  <pre class="mermaid">
+flowchart LR
+  classDef ui fill:#1f2a18,stroke:#b7ff2a,color:#d7dee7,rx:8,ry:8
+  classDef api fill:#142031,stroke:#6ec8ff,color:#d7dee7,rx:8,ry:8
+  classDef lib fill:#1a2331,stroke:#2a3442,color:#d7dee7,rx:8,ry:8
+  classDef ext fill:#2a1f10,stroke:#ffb02e,color:#d7dee7,rx:8,ry:8
+
+  U["User · pick session + 2 laps"]:::ui
+  URL["URL search params<br/>?session=...&amp;lapA=...&amp;lapB=..."]:::ui
+  UI["Comparison page<br/>delta · telemetry · track map"]:::ui
+
+  R1["/api/sessions"]:::api
+  R2["/api/lap-comparison"]:::api
+
+  C["openf1-client.ts"]:::lib
+  M["merge-lap-samples.ts<br/>nearest by timestamp"]:::lib
+  N["normalize-lap-progress.ts<br/>relative progress + distance"]:::lib
+  B["build-lap-comparison-payload.ts<br/>delta · gain/loss · max/min"]:::lib
+
+  OF1[("OpenF1 API<br/>sessions · drivers · laps<br/>car_data · location")]:::ext
+
+  U --> URL --> R2
+  U --> R1 --> C --> OF1
+  R2 --> C
+  C --> M --> N --> B --> R2
+  R2 --> UI
+  UI -.shareable.-> URL
+  </pre>
+  <div class="legend">
+    <span><span class="swatch" style="background:#b7ff2a"></span>Browser surface</span>
+    <span><span class="swatch" style="background:#6ec8ff"></span>Server BFF route</span>
+    <span><span class="swatch" style="background:#2a3442"></span>Normalization library</span>
+    <span><span class="swatch" style="background:#ffb02e"></span>External · OpenF1</span>
+  </div>
+</section>
+
+<section>
+  <h2>Success bar</h2>
+  <p class="sub">When this is true, MVP ships:</p>
+  <pre class="mermaid">
+flowchart TB
+  classDef ok fill:#1f2a18,stroke:#b7ff2a,color:#d7dee7,rx:8,ry:8
+  S1["Open one page · pick session · compare 2 laps"]:::ok
+  S2["Gain/loss zones are obvious without tooltips"]:::ok
+  S3["Shared URL fully restores the comparison"]:::ok
+  S4["UI looks portfolio-grade, not admin-tool"]:::ok
+  S5["Data layer modular enough for &#8220;Stint Story&#8221; v2"]:::ok
+  S1 --> S2 --> S3 --> S4 --> S5
+  </pre>
+</section>
+
+<footer>
+  Plan source: <code>plans/260527-1344-quali-duel-pet-project/</code> · Visualization rendered with Mermaid v11
+</footer>
+
+</div>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      background: '#0b0f14',
+      primaryColor: '#121821',
+      primaryTextColor: '#d7dee7',
+      primaryBorderColor: '#2a3442',
+      lineColor: '#6ec8ff',
+      secondaryColor: '#1a2331',
+      tertiaryColor: '#0b0f14',
+      clusterBkg: '#0f1620',
+      clusterBorder: '#2a3442',
+      fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontSize: '14px'
+    },
+    flowchart: { curve: 'basis', padding: 18, htmlLabels: true }
+  });
+</script>
+</body>
+</html>

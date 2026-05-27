@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quali Duel Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --graphite: #0b0f14;
+      --panel: #121821;
+      --blue: #6ec8ff;
+      --lime: #b7ff2a;
+      --amber: #ffb02e;
+      --red: #ff5a5f;
+      --smoke: #d7dee7;
+      --line: #2a3442;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--graphite);
+      color: var(--smoke);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      padding: 2rem;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--blue), var(--lime));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle { color: #8a95a5; font-size: 1.1rem; }
+    .section {
+      background: var(--panel);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--line);
+    }
+    .section h2 {
+      color: var(--blue);
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section h2::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 1.2em;
+      background: var(--lime);
+      border-radius: 2px;
+    }
+    .mermaid {
+      background: var(--graphite);
+      border-radius: 12px;
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+    .stack-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--graphite);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+    .stack-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .phase-timeline {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding: 1rem 0;
+    }
+    .phase-card {
+      min-width: 200px;
+      padding: 1rem;
+      background: var(--graphite);
+      border-radius: 12px;
+      border-left: 3px solid var(--blue);
+    }
+    .phase-card.current { border-left-color: var(--lime); }
+    .phase-number {
+      font-size: 0.75rem;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .phase-title { font-weight: 600; margin: 0.25rem 0; }
+    .phase-effort { font-size: 0.8rem; color: #8a95a5; }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #5a6577;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Quali Duel</h1>
+      <p class="subtitle">F1 Qualifying Lap Comparison - Architecture Overview</p>
+    </header>
+
+    <div class="section">
+      <h2>System Architecture</h2>
+      <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#6ec8ff', 'primaryTextColor': '#d7dee7', 'primaryBorderColor': '#2a3442', 'lineColor': '#6ec8ff', 'secondaryColor': '#121821', 'tertiaryColor': '#0b0f14' }}}%%
+flowchart TB
+    subgraph Client["Browser Client"]
+        UI[Quali Duel UI]
+        Charts[Telemetry Charts]
+        Map[Track Progress Map]
+    end
+
+    subgraph NextJS["Next.js App"]
+        Pages[Page Components]
+        API[API Route Handlers]
+        Cache[Response Cache]
+    end
+
+    subgraph DataLayer["Data Access Layer"]
+        OpenF1Client[OpenF1 Client]
+        Mappers[Data Mappers]
+        Telemetry[Telemetry Pipeline]
+    end
+
+    subgraph External["External APIs"]
+        OpenF1[(OpenF1 API)]
+        FastF1[(FastF1 - Future)]
+    end
+
+    UI --> Pages
+    Charts --> Pages
+    Map --> Pages
+    Pages --> API
+    API --> Cache
+    Cache --> OpenF1Client
+    OpenF1Client --> Mappers
+    Mappers --> Telemetry
+    OpenF1Client --> OpenF1
+    Telemetry -.-> FastF1
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-color" style="background: #6ec8ff;"></div> Primary Data Flow</div>
+        <div class="legend-item"><div class="legend-color" style="background: #2a3442;"></div> Future Integration</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="section">
+        <h2>Data Flow Pipeline</h2>
+        <div class="mermaid">
+%%{init: {'theme': 'dark'}}%%
+flowchart LR
+    A[User Selects\nSession + Laps] --> B[Fetch\nMetadata]
+    B --> C[Fetch\ncar_data]
+    B --> D[Fetch\nlocation]
+    C --> E[Merge\nSamples]
+    D --> E
+    E --> F[Normalize\nLap Progress]
+    F --> G[Build\nComparison\nPayload]
+    G --> H[Render\nCharts]
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>UI Component Tree</h2>
+        <div class="mermaid">
+%%{init: {'theme': 'dark'}}%%
+flowchart TD
+    Shell[ComparisonPageShell] --> Selectors[SessionAndLapSelectors]
+    Shell --> Cards[LapSummaryCards]
+    Shell --> Delta[DeltaTraceChart]
+    Shell --> Stack[TelemetryStackCharts]
+    Shell --> Track[TrackProgressMap]
+
+    Stack --> Speed[Speed Trace]
+    Stack --> Throttle[Throttle Trace]
+    Stack --> Brake[Brake Trace]
+    Stack --> Gear[Gear Trace]
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Telemetry Processing Sequence</h2>
+      <div class="mermaid">
+%%{init: {'theme': 'dark'}}%%
+sequenceDiagram
+    participant U as User
+    participant UI as Quali Duel UI
+    participant API as API Routes
+    participant OC as OpenF1 Client
+    participant TP as Telemetry Pipeline
+    participant OF as OpenF1 API
+
+    U->>UI: Select Session
+    UI->>API: GET /api/sessions
+    API->>OC: fetchSessions()
+    OC->>OF: /sessions?type=Qualifying
+    OF-->>OC: Session List
+    OC-->>API: Mapped Sessions
+    API-->>UI: Session Options
+
+    U->>UI: Select Two Laps
+    UI->>API: GET /api/lap-comparison
+    API->>OC: fetchLapData(lap1, lap2)
+    OC->>OF: /car_data + /location
+    OF-->>OC: Raw Telemetry
+    OC-->>TP: Merged Samples
+    TP->>TP: Normalize Progress
+    TP->>TP: Calculate Delta
+    TP-->>API: LapComparisonPayload
+    API-->>UI: Comparison Data
+    UI->>UI: Render Charts
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Module Structure</h2>
+      <div class="mermaid">
+%%{init: {'theme': 'dark'}}%%
+classDiagram
+    class OpenF1Client {
+        +fetchSessions()
+        +fetchDrivers()
+        +fetchLaps()
+        +fetchCarData()
+        +fetchLocation()
+    }
+
+    class TelemetryPipeline {
+        +mergeLapSamples()
+        +normalizeLapProgress()
+        +buildComparisonPayload()
+    }
+
+    class LapComparisonPayload {
+        +lapA: LapData
+        +lapB: LapData
+        +delta: DeltaTrace
+        +gainLossZones: Zone[]
+        +metadata: ComparisonMeta
+    }
+
+    class ChartComponents {
+        +DeltaTraceChart
+        +SpeedChart
+        +ThrottleBrakeChart
+        +GearChart
+    }
+
+    OpenF1Client --> TelemetryPipeline
+    TelemetryPipeline --> LapComparisonPayload
+    LapComparisonPayload --> ChartComponents
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>State Management</h2>
+      <div class="mermaid">
+%%{init: {'theme': 'dark'}}%%
+stateDiagram-v2
+    [*] --> Empty: Page Load
+    Empty --> SessionSelected: Select Session
+    SessionSelected --> DriversLoaded: Fetch Drivers
+    DriversLoaded --> LapsSelected: Select 2 Laps
+    LapsSelected --> Loading: Fetch Comparison
+    Loading --> ComparisonReady: Data Loaded
+    Loading --> Error: Fetch Failed
+    ComparisonReady --> LapsSelected: Change Laps
+    ComparisonReady --> SessionSelected: Change Session
+    Error --> LapsSelected: Retry
+
+    note right of ComparisonReady
+        URL params synced
+        for shareability
+    end note
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Development Phases</h2>
+      <div class="phase-timeline">
+        <div class="phase-card">
+          <div class="phase-number">Phase 1</div>
+          <div class="phase-title">Research & Scope</div>
+          <div class="phase-effort">1 day</div>
+        </div>
+        <div class="phase-card current">
+          <div class="phase-number">Phase 2</div>
+          <div class="phase-title">Data Access Layer</div>
+          <div class="phase-effort">2 days</div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-number">Phase 3</div>
+          <div class="phase-title">Lap Comparison UX</div>
+          <div class="phase-effort">3 days</div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-number">Phase 4</div>
+          <div class="phase-title">Test & Polish</div>
+          <div class="phase-effort">1 day</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Tech Stack</h2>
+      <div class="stack-item">
+        <div class="stack-icon" style="background: linear-gradient(135deg, #000, #333);">TS</div>
+        <div><strong>Next.js + TypeScript</strong> - Full-stack app with API routes</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon" style="background: linear-gradient(135deg, #6ec8ff, #4da8e0);">OF</div>
+        <div><strong>OpenF1 API</strong> - Primary data source for qualifying telemetry</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon" style="background: linear-gradient(135deg, #b7ff2a, #8bc91f);">RC</div>
+        <div><strong>Recharts / visx</strong> - Telemetry visualization charts</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon" style="background: linear-gradient(135deg, #ffb02e, #e09a1f);">FM</div>
+        <div><strong>Framer Motion</strong> - UI transitions and chart animations</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Gain/Loss Visualization Concept</h2>
+      <div class="mermaid">
+%%{init: {'theme': 'dark'}}%%
+xychart-beta
+    title "Delta Time Over Lap Progress"
+    x-axis "Lap Progress %" [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    y-axis "Delta (seconds)" -0.5 --> 0.5
+    line [0, 0.05, 0.12, 0.08, -0.02, -0.15, -0.22, -0.18, -0.25, -0.30, -0.32]
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-color" style="background: #b7ff2a;"></div> Driver A Ahead</div>
+        <div class="legend-item"><div class="legend-color" style="background: #ff5a5f;"></div> Driver B Ahead</div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Quali Duel - F1 Telemetry Comparison Pet Project</p>
+      <p>Built with Next.js + TypeScript | Data from OpenF1</p>
+    </footer>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0b0f14',
+        primaryColor: '#6ec8ff',
+        primaryTextColor: '#d7dee7',
+        primaryBorderColor: '#2a3442',
+        lineColor: '#6ec8ff',
+        secondaryColor: '#121821',
+        tertiaryColor: '#0b0f14',
+        noteBkgColor: '#121821',
+        noteTextColor: '#d7dee7'
+      },
+      flowchart: { curve: 'basis', padding: 15 },
+      sequence: { mirrorActors: false }
+    });
+  </script>
+</body>
+</html>

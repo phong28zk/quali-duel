@@ -1,0 +1,63 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-graphite);
+  color: var(--color-text-smoke);
+  font-family: var(--font-sans);
+  font-size: var(--type-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-telemetry-blue);
+  text-decoration: none;
+}
+
+.qd-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-5);
+  min-height: 100vh;
+}
+
+.qd-hero {
+  margin-bottom: var(--space-8);
+}
+
+.qd-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: var(--type-eyebrow);
+  color: var(--color-telemetry-blue);
+  margin: 0 0 var(--space-3);
+}
+
+.qd-headline {
+  font-size: var(--type-headline);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-4);
+}
+
+.qd-subhead {
+  color: rgba(215, 222, 231, 0.7);
+  margin: 0;
+  max-width: 60ch;
+}
+
+.qd-empty {
+  padding: var(--space-6);
+  border: 1px solid var(--color-quiet-line);
+  border-radius: var(--radius-panel);
+  background: var(--color-panel-charcoal);
+  text-align: center;
+}
