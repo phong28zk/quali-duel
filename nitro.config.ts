@@ -6,5 +6,7 @@ export default defineNitroConfig({
   cloudflare: {
     deployConfig: true,
     nodeCompat: true,
+    // Pin the worker name so it stays stable across env / git remote changes.
+    wrangler: { name: 'quali-duel' },
   },
 });
