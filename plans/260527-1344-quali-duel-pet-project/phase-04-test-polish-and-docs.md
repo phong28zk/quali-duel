@@ -1,7 +1,7 @@
 ---
 phase: 4
 title: "Test polish and docs"
-status: pending
+status: complete
 priority: P2
 effort: "2d"
 dependencies: [3]
